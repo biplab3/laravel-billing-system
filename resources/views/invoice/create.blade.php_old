@@ -1,0 +1,179 @@
+@extends('layouts.app')
+
+@section('content')
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">Create Invoice</h4>
+
+        <a href="/dashboard" class="btn btn-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="POST" action="{{ route('invoice.store') }}">
+                @csrf
+
+                <!-- CUSTOMER -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Customer</label>
+                    <select name="customer_id" class="form-select customer-select" required>
+                        <option value="">-- Select Customer --</option>
+                        @foreach($customers as $c)
+                            <option value="{{ $c->id }}">{{ $c->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- TABLE -->
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle text-center" id="table">
+                        <thead class="table-dark">
+                            <tr>
+                                <th style="width: 32%;">Product</th>
+                                <th style="width: 12%;">Qty</th>
+                                <th style="width: 18%;">Price</th>
+                                <th style="width: 18%;">Total</th>
+                                <th style="width: 20%;">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <select name="product_id[]" class="form-select product-select" required>
+                                        <option value="">-- Select Product --</option>
+                                        @foreach($products as $p)
+                                            <option value="{{ $p->id }}" data-price="{{ $p->price }}">
+                                                {{ $p->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <input type="number" name="qty[]" class="form-control text-center" value="1" min="1"
+                                        onkeyup="calc(this)" onchange="calc(this)">
+                                </td>
+
+                                <td>
+                                    <input type="text" name="price[]" class="form-control text-end" value="0"
+                                        onkeyup="calc(this)" onchange="calc(this)" readonly>
+                                </td>
+
+                                <td>
+                                    <input type="text" name="total[]" class="form-control text-end" value="0" readonly>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button type="button" class="btn btn-success btn-sm" onclick="addRow()">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
+                                            <i class="bi bi-dash-lg"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- TOTAL -->
+                <div class="row mt-3">
+                    <div class="col-md-4 ms-auto">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body text-end">
+                                <h5 class="mb-0">
+                                    Grand Total: <span class="text-success fw-bold">₹ <span id="grand_total">0</span></span>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SAVE BUTTON -->
+                <div class="text-end mt-4">
+                    <button class="btn btn-primary px-4">
+                        <i class="bi bi-save"></i> Save Invoice
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+@endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function () {
+            $('.product-select').select2({
+                width: '100%'
+            });
+
+            $('.customer-select').select2({
+                width: '100%'
+            });
+
+            $(document).on('change', '.product-select', function () {
+                let price = $(this).find(':selected').data('price') || 0;
+
+                $(this).closest('tr').find('[name="price[]"]').val(price);
+                calc(this);
+            });
+        });
+
+        function addRow() {
+            $('.product-select').select2('destroy');
+
+            let row = $('#table tbody tr:first').clone();
+
+            row.find('input[name="qty[]"]').val(1);
+            row.find('input[name="price[]"]').val(0);
+            row.find('input[name="total[]"]').val(0);
+            row.find('select').val('');
+
+            $('#table tbody').append(row);
+
+            $('.product-select').select2({
+                width: '100%'
+            });
+        }
+
+        function calc(el) {
+            let row = $(el).closest('tr');
+
+            let qty = parseFloat(row.find('[name="qty[]"]').val()) || 0;
+            let price = parseFloat(row.find('[name="price[]"]').val()) || 0;
+
+            let total = qty * price;
+
+            row.find('[name="total[]"]').val(total.toFixed(2));
+
+            grandTotal();
+        }
+
+        function grandTotal() {
+            let sum = 0;
+
+            $('[name="total[]"]').each(function () {
+                sum += parseFloat($(this).val()) || 0;
+            });
+
+            $('#grand_total').text(sum.toFixed(2));
+        }
+
+        function removeRow(btn) {
+            if ($('#table tbody tr').length > 1) {
+                $(btn).closest('tr').remove();
+                grandTotal();
+            }
+        }
+    </script>
+@endpush
