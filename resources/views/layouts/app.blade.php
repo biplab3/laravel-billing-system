@@ -24,13 +24,50 @@
         .card-body {
             padding: 1rem !important;
         }
+
+        .navbar {
+            min-height: 64px;
+        }
+
+        .navbar-brand {
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            padding: 10px 14px !important;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            background: #198754;
+            color: #fff !important;
+            border-radius: 8px;
+        }
+
+        .dropdown-menu {
+            border: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            padding: 8px;
+        }
+
+        .dropdown-item {
+            border-radius: 7px;
+            padding: 8px 14px;
+        }
+
+        .dropdown-item:hover {
+            background: #198754;
+            color: #fff;
+        }
     </style>
 </head>
 
 <body class="bg-light">
 
     <!-- 🔥 NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
         <div class="container">
 
             <a class="navbar-brand fw-bold" href="/dashboard">
@@ -63,6 +100,11 @@
                     <a href="{{ route('customer.ledger') }}" class="nav-link">
                         Customer Ledger
                     </a>
+                    <a href="{{ route('suppliers.index') }}" class="nav-link">
+                        Suppliers
+                    </a>
+                    <a href="{{ route('purchases.index') }}" class="nav-link">Purchases</a>
+                    <a href="{{ route('purchase.report') }}" class="nav-link">Purchase Report</a>
                 </ul>
 
                 <ul class="navbar-nav">
@@ -74,6 +116,90 @@
                             <form action="/logout" method="POST">
                                 @csrf
                                 <button class="btn btn-danger btn-sm">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a href="/login" class="btn btn-outline-light btn-sm me-2">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/register" class="btn btn-primary btn-sm">Register</a>
+                        </li>
+                    @endauth
+                </ul>
+
+            </div>
+        </div>
+    </nav> -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid px-4">
+
+            <a class="navbar-brand fw-bold fs-4" href="{{ route('dashboard') }}">
+                <i class="bi bi-receipt-cutoff"></i> BillingApp
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMenu">
+
+                <ul class="navbar-nav me-auto gap-1">
+
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard') }}" class="nav-link">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-box-seam"></i> Masters
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/products">Products</a></li>
+                            <li><a class="dropdown-item" href="/customers">Customers</a></li>
+                            <li><a class="dropdown-item" href="{{ route('suppliers.index') }}">Suppliers</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-file-earmark-text"></i> Sales
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('invoice.index') }}">Invoices</a></li>
+                            <li><a class="dropdown-item" href="/invoice/create">New Invoice</a></li>
+                            <li><a class="dropdown-item" href="{{ route('sales.report') }}">Sales Report</a></li>
+                            <li><a class="dropdown-item" href="{{ route('customer.ledger') }}">Customer Ledger</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-cart-plus"></i> Purchase
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('purchases.index') }}">Purchases</a></li>
+                            <li><a class="dropdown-item" href="{{ route('purchases.create') }}">New Purchase</a></li>
+                            <li><a class="dropdown-item" href="{{ route('purchase.report') }}">Purchase Report</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+
+                <ul class="navbar-nav align-items-center">
+                    @auth
+                        <li class="nav-item me-3 text-white">
+                            <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
+                        </li>
+
+                        <li class="nav-item">
+                            <form action="/logout" method="POST">
+                                @csrf
+                                <button class="btn btn-danger btn-sm px-3">
                                     <i class="bi bi-box-arrow-right"></i> Logout
                                 </button>
                             </form>

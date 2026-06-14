@@ -6,6 +6,9 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\PurchaseController;
+
 
 
 // Route::get('/', function () {
@@ -160,6 +163,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware(['auth'])
         ->name('dashboard');
+
+
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+    Route::get('/suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
+    Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
+    Route::get('/suppliers/{id}/edit', [SupplierController::class, 'edit'])->name('suppliers.edit');
+    Route::put('/suppliers/{id}', [SupplierController::class, 'update'])->name('suppliers.update');
+    Route::post('/suppliers/{id}/delete', [SupplierController::class, 'delete'])->name('suppliers.delete');
+
+    Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
+    Route::get('/purchases/create', [PurchaseController::class, 'create'])->name('purchases.create');
+    Route::post('/purchases', [PurchaseController::class, 'store'])->name('purchases.store');
+    Route::get('/purchases/{id}', [PurchaseController::class, 'show'])->name('purchases.show');
+
+    Route::get('/purchase-report', [PurchaseController::class, 'purchaseReport'])
+        ->name('purchase.report');
+
+    Route::get('/purchase-report/export', [PurchaseController::class, 'exportPurchaseReport'])
+        ->name('purchase.report.export');
 
 });
 
