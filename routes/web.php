@@ -183,6 +183,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/purchase-report/export', [PurchaseController::class, 'exportPurchaseReport'])
         ->name('purchase.report.export');
 
+    Route::get('/stock-report', [ProductController::class, 'stockReport'])
+        ->name('stock.report');
+
+    Route::get('/stock-report/export', [ProductController::class, 'exportStockReport'])
+        ->name('stock.report.export');
+
 });
 
 

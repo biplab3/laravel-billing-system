@@ -185,6 +185,11 @@
                             <li><a class="dropdown-item" href="{{ route('purchases.index') }}">Purchases</a></li>
                             <li><a class="dropdown-item" href="{{ route('purchases.create') }}">New Purchase</a></li>
                             <li><a class="dropdown-item" href="{{ route('purchase.report') }}">Purchase Report</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('stock.report') }}">
+                                    Current Stock Report
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

@@ -135,6 +135,8 @@ class PurchaseController extends Controller
         $query = Purchase::where('user_id', Auth::id())
             ->with('supplier');
 
+        //apply filters here
+
         if ($request->filled('supplier_id')) {
             $query->where('supplier_id', $request->supplier_id);
         }
@@ -146,6 +148,8 @@ class PurchaseController extends Controller
         if ($request->filled('to_date')) {
             $query->whereDate('purchase_date', '<=', $request->to_date);
         }
+
+        //end filter here
 
         $purchases = $query->latest()->get();
 

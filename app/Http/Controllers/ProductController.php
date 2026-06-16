@@ -69,4 +69,76 @@ class ProductController extends Controller
 
         return back()->with('success', 'Product deleted');
     }
+
+    public function stockReport(Request $request)
+    {
+        $query = Product::where('user_id', Auth::id());
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $products = $query->latest()->get();
+
+        $totalProducts = $products->count();
+
+        $totalStockQty = $products->sum('stock_quantity');
+
+        $inventoryValue = $products->sum(function ($product) {
+            return $product->stock_quantity * $product->price;
+        });
+
+        return view('products.stock_report', compact(
+            'products',
+            'totalProducts',
+            'totalStockQty',
+            'inventoryValue'
+        ));
+    }
+
+    public function exportStockReport(Request $request)
+    {
+        $query = Product::where('user_id', Auth::id());
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $products = $query->get();
+
+        $filename = 'stock_report_' . date('YmdHis') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$filename",
+        ];
+
+        $callback = function () use ($products) {
+
+            $file = fopen('php://output', 'w');
+
+            fputcsv($file, [
+                'Product',
+                // 'SKU',
+                'Stock Qty',
+                'Price',
+                'Stock Value'
+            ]);
+
+            foreach ($products as $product) {
+
+                fputcsv($file, [
+                    $product->name,
+                    // $product->sku,
+                    $product->stock_quantity,
+                    $product->price,
+                    $product->stock_quantity * $product->price,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }
