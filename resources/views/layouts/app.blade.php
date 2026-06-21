@@ -145,53 +145,89 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navMenu">
-
+@auth
                 <ul class="navbar-nav me-auto gap-1">
+                    @if(auth()->user()->hasPermission('Dashboard'))
+                        <li class="nav-item">
+                            <a href="{{ route('dashboard') }}" class="nav-link">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        @endif
+@if(
+auth()->user()->hasPermission('Products') ||
+auth()->user()->hasPermission('Customers') ||
+auth()->user()->hasPermission('Suppliers')
+)
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-box-seam"></i> Masters
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/products">Products</a></li>
+                                <li><a class="dropdown-item" href="/customers">Customers</a></li>
+                                <li><a class="dropdown-item" href="{{ route('suppliers.index') }}">Suppliers</a></li>
+                            </ul>
+                        </li>
+                        @endif
+                        @if(
+auth()->user()->hasPermission('Invoices') ||
+auth()->user()->hasPermission('Sales Report') ||
+auth()->user()->hasPermission('Customer Ledger')
+)
 
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-file-earmark-text"></i> Sales
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('invoice.index') }}">Invoices</a></li>
+                                <li><a class="dropdown-item" href="/invoice/create">New Invoice</a></li>
+                                <li><a class="dropdown-item" href="{{ route('sales.report') }}">Sales Report</a></li>
+                                <li><a class="dropdown-item" href="{{ route('customer.ledger') }}">Customer Ledger</a></li>
+                            </ul>
+                        </li>
+                        @endif
+                        @if(
+auth()->user()->hasPermission('Purchases') ||
+auth()->user()->hasPermission('Purchase Report') ||
+auth()->user()->hasPermission('Stock Report')
+)
 
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-cart-plus"></i> Purchase
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('purchases.index') }}">Purchases</a></li>
+                                <li><a class="dropdown-item" href="{{ route('purchases.create') }}">New Purchase</a></li>
+                                <li><a class="dropdown-item" href="{{ route('purchase.report') }}">Purchase Report</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('stock.report') }}">
+                                        Current Stock Report
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+                    @if(auth()->user()->hasPermission('Users'))
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-box-seam"></i> Masters
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/products">Products</a></li>
-                            <li><a class="dropdown-item" href="/customers">Customers</a></li>
-                            <li><a class="dropdown-item" href="{{ route('suppliers.index') }}">Suppliers</a></li>
-                        </ul>
-                    </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-file-earmark-text"></i> Sales
+                            Administration
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('invoice.index') }}">Invoices</a></li>
-                            <li><a class="dropdown-item" href="/invoice/create">New Invoice</a></li>
-                            <li><a class="dropdown-item" href="{{ route('sales.report') }}">Sales Report</a></li>
-                            <li><a class="dropdown-item" href="{{ route('customer.ledger') }}">Customer Ledger</a></li>
-                        </ul>
-                    </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-cart-plus"></i> Purchase
-                        </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('purchases.index') }}">Purchases</a></li>
-                            <li><a class="dropdown-item" href="{{ route('purchases.create') }}">New Purchase</a></li>
-                            <li><a class="dropdown-item" href="{{ route('purchase.report') }}">Purchase Report</a></li>
+
                             <li>
-                                <a class="dropdown-item" href="{{ route('stock.report') }}">
-                                    Current Stock Report
+                                <a class="dropdown-item" href="{{ route('users.index') }}">
+                                    User & Permission Management
                                 </a>
                             </li>
+
                         </ul>
                     </li>
+                    @endif
 
                 </ul>
 
@@ -218,7 +254,7 @@
                         </li>
                     @endauth
                 </ul>
-
+@endauth
             </div>
         </div>
     </nav>

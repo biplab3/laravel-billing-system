@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\UserController;
 
 
 
@@ -18,98 +19,6 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-
-// Route::get('/dashboard', function () {
-
-//     return view('dashboard', [
-//         'totalProducts' => \App\Models\Product::count(),
-//         'totalCustomers' => \App\Models\Customer::count(),
-//         'totalInvoices' => \App\Models\Invoice::count(),
-
-//         'recentInvoices' => \App\Models\Invoice::with('customer')
-//             ->latest()
-//             ->take(5)
-//             ->get()
-//     ]);
-
-// })->middleware(['auth'])->name('dashboard');
-// Route::get('/dashboard', function () {
-
-//     $userId = Auth::id();
-
-//     return view('dashboard', [
-//         'totalProducts' => \App\Models\Product::where('user_id', $userId)->count(),
-//         'totalCustomers' => \App\Models\Customer::where('user_id', $userId)->count(),
-//         'totalInvoices' => \App\Models\Invoice::where('user_id', $userId)->count(),
-
-//         'recentInvoices' => \App\Models\Invoice::where('user_id', $userId)
-//             ->with('customer')
-//             ->latest()
-//             ->take(5)
-//             ->get()
-//     ]);
-
-// })->middleware(['auth'])->name('dashboard');
-// Route::get('/dashboard', function () {
-
-//     $userId = Auth::id();
-
-//     $totalSales = \App\Models\Invoice::where('user_id', $userId)
-//         ->sum('final_amount');
-
-//     $todaySales = \App\Models\Invoice::where('user_id', $userId)
-//         ->whereDate('created_at', today())
-//         ->sum('final_amount');
-
-//     $totalProducts = \App\Models\Product::where('user_id', $userId)->count();
-
-//     $totalCustomers = \App\Models\Customer::where('user_id', $userId)->count();
-
-//     $totalInvoices = \App\Models\Invoice::where('user_id', $userId)->count();
-
-//     $lowStockProducts = \App\Models\Product::where('user_id', $userId)
-//         ->where('stock_quantity', '<=', 5)
-//         ->count();
-
-//     $latestInvoices = \App\Models\Invoice::where('user_id', $userId)
-//         ->with('customer')
-//         ->latest()
-//         ->take(5)
-//         ->get();
-
-//     $last7Days = collect();
-
-//     for ($i = 6; $i >= 0; $i--) {
-//         $date = now()->subDays($i)->format('Y-m-d');
-
-//         $last7Days->push([
-//             'date' => now()->subDays($i)->format('d M'),
-//             'sales' => \App\Models\Invoice::where('user_id', $userId)
-//                 ->whereDate('created_at', $date)
-//                 ->sum('final_amount'),
-//         ]);
-//     }
-
-//     $salesChartLabels = $last7Days->pluck('date');
-//     $salesChartData = $last7Days->pluck('sales');
-
-//     return view('dashboard', compact(
-//         'totalSales',
-//         'todaySales',
-//         'totalProducts',
-//         'totalCustomers',
-//         'totalInvoices',
-//         'lowStockProducts',
-//         'latestInvoices',
-//         'salesChartLabels',
-//         'salesChartData'
-//     ));
-
-// })->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -188,6 +97,26 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/stock-report/export', [ProductController::class, 'exportStockReport'])
         ->name('stock.report.export');
+
+    //routes for user permission management
+
+    Route::get('/users', [UserController::class, 'index'])
+        ->name('users.index');
+
+    Route::get('/users/create', [UserController::class, 'create'])
+        ->name('users.create');
+
+    Route::post('/users/store', [UserController::class, 'store'])
+        ->name('users.store');
+
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])
+        ->name('users.edit');
+
+    Route::post('/users/{id}/update', [UserController::class, 'update'])
+        ->name('users.update');
+
+    Route::post('/users/{id}/delete', [UserController::class, 'delete'])
+        ->name('users.delete');
 
 });
 
